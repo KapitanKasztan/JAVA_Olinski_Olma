@@ -1,4 +1,4 @@
-package com.example.taskmanager.model;
+package JAVA_Olinski_Olma.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
