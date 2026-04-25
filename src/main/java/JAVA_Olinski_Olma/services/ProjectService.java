@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProjectService {
@@ -25,5 +26,26 @@ public class ProjectService {
     @PostMapping
     public Project createProject(@RequestBody Project project) {
         return projectRepository.save(project);
+    }
+
+    public Optional<Project> updateProject(Long id, Project projectDetails) {
+        Optional<Project> project = projectRepository.findById(id);
+        if (project.isPresent()) {
+            Project existingProject = project.get();
+            existingProject.setName(projectDetails.getName());
+            if (projectDetails.getUsers() != null) {
+                existingProject.setUsers(projectDetails.getUsers());
+            }
+            return Optional.of(projectRepository.save(existingProject));
+        }
+        return Optional.empty();
+    }
+
+    public boolean deleteProject(Long id) {
+        if (projectRepository.existsById(id)) {
+            projectRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }

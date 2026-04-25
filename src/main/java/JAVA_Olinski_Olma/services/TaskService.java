@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TaskService {
@@ -25,5 +26,27 @@ public class TaskService {
     @PostMapping
     public Task createTask(@RequestBody Task task) {
         return taskRepository.save(task);
+    }
+
+    public Optional<Task> updateTask(Long id, Task taskDetails) {
+        Optional<Task> task = taskRepository.findById(id);
+        if (task.isPresent()) {
+            Task existingTask = task.get();
+            existingTask.setTitle(taskDetails.getTitle());
+            existingTask.setDescription(taskDetails.getDescription());
+            existingTask.setTaskType(taskDetails.getTaskType());
+            existingTask.setProject(taskDetails.getProject());
+            existingTask.setUser(taskDetails.getUser());
+            return Optional.of(taskRepository.save(existingTask));
+        }
+        return Optional.empty();
+    }
+
+    public boolean deleteTask(Long id) {
+        if (taskRepository.existsById(id)) {
+            taskRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }
