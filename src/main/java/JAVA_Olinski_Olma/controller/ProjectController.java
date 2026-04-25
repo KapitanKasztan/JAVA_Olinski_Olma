@@ -36,10 +36,7 @@ public class ProjectController {
     @PutMapping("/{id}")
     public ResponseEntity<Project> updateProject(@PathVariable Long id, @RequestBody Project projectDetails) {
         var updatedProject = projectService.updateProject(id, projectDetails);
-        if (updatedProject.isPresent()) {
-            return ResponseEntity.ok(updatedProject.get());
-        }
-        return ResponseEntity.notFound().build();
+        return updatedProject.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Delete a project by ID")

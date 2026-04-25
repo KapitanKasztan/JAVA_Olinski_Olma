@@ -38,10 +38,7 @@ public class TaskController {
     @PutMapping("/{id}")
     public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task taskDetails) {
         var updatedTask = taskService.updateTask(id, taskDetails);
-        if (updatedTask.isPresent()) {
-            return ResponseEntity.ok(updatedTask.get());
-        }
-        return ResponseEntity.notFound().build();
+        return updatedTask.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Delete a task by ID")
