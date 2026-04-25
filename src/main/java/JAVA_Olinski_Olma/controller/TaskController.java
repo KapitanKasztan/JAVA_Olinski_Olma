@@ -1,10 +1,12 @@
 package JAVA_Olinski_Olma.controller;
 
 import JAVA_Olinski_Olma.model.Task;
-import JAVA_Olinski_Olma.repository.TaskRepository;
+import JAVA_Olinski_Olma.services.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -13,21 +15,22 @@ import java.util.List;
 @RequestMapping("/api/tasks")
 public class TaskController {
 
-    private final TaskRepository taskRepository;
+    private final TaskService taskService;
 
-    public TaskController(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
     }
 
     @Operation(summary = "Retrieve all tasks")
     @GetMapping("/all")
     public List<Task> getAllTasks() {
-        return taskRepository.findAll();
+        return taskService.getAllTasks();
     }
 
     @Operation(summary = "Create a new task")
     @PostMapping("/create")
-    public Task createTask(@RequestBody Task task) {
-        return taskRepository.save(task);
+    public ResponseEntity<Task> createTask(@RequestBody Task task) {
+        Task createdTask = taskService.createTask(task);
+        return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
 }
