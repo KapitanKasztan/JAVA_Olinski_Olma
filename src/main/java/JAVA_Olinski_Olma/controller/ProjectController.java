@@ -1,9 +1,11 @@
 package JAVA_Olinski_Olma.controller;
 
 import JAVA_Olinski_Olma.model.Project;
-import JAVA_Olinski_Olma.repository.ProjectRepository;
+import JAVA_Olinski_Olma.services.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,21 +15,20 @@ import java.util.List;
 @RequestMapping("/api/projects")
 public class ProjectController {
 
-    private final ProjectRepository projectRepository;
+    private final ProjectService projectService;
 
-    public ProjectController(ProjectRepository projectRepository) {
-        this.projectRepository = projectRepository;
+    public ProjectController(ProjectService projectService) {
+        this.projectService = projectService;
     }
 
     @Operation(summary = "Retrieve all projects")
     @GetMapping("/all")
-    public List<Project> getAllProjects() {
-        return projectRepository.findAll();
-    }
+    public List<Project> getAllProjects() { return projectService.getAllProjects();}
 
     @Operation(summary = "Create a new project")
     @PostMapping("/create")
-    public Project createProject(@RequestBody Project project) {
-        return projectRepository.save(project);
+    public ResponseEntity<Project> createProject(@RequestBody Project project) {
+        Project createdProject = projectService.createProject(project);
+        return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
     }
 }

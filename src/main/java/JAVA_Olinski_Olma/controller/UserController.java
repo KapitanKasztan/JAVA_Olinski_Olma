@@ -1,9 +1,11 @@
 package JAVA_Olinski_Olma.controller;
 
 import JAVA_Olinski_Olma.model.Users;
-import JAVA_Olinski_Olma.repository.UserRepository;
+import JAVA_Olinski_Olma.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,21 +14,22 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @Operation(summary = "Retrieve all users")
     @GetMapping("/all")
     public List<Users> getAllUsers() {
-        return userRepository.findAll();
+        return userService.getAllUsers();
     }
 
     @Operation(summary = "Create a new user")
     @PostMapping("/create")
-    public Users createUser(@RequestBody Users user) {
-        return userRepository.save(user);
+    public ResponseEntity<Users> createUser(@RequestBody Users user) {
+        Users createdUser = userService.createUser(user);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 }
