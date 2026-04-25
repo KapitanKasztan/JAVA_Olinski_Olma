@@ -32,4 +32,20 @@ public class UserController {
         Users createdUser = userService.createUser(user);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
+
+    @Operation(summary = "Update an existing user")
+    @PutMapping("/{id}")
+    public ResponseEntity<Users> updateUser(@PathVariable Long id, @RequestBody Users userDetails) {
+        var updatedUser = userService.updateUser(id, userDetails);
+        return updatedUser.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @Operation(summary = "Delete a user by ID")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        if (userService.deleteUser(id)) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
 }

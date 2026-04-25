@@ -33,4 +33,20 @@ public class TaskController {
         Task createdTask = taskService.createTask(task);
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
+
+    @Operation(summary = "Update an existing task")
+    @PutMapping("/{id}")
+    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task taskDetails) {
+        var updatedTask = taskService.updateTask(id, taskDetails);
+        return updatedTask.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @Operation(summary = "Delete a task by ID")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+        if (taskService.deleteTask(id)) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
 }
